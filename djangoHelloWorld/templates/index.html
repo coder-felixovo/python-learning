@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Hello World</title>
+</head>
+<body>
+    <!-- 在 body 最上方导入自定义标签、过滤器 -->
+    {% load mytags %}
+
+    <h1>{{title}}</h1>
+    <p>{{list}}</p> <!-- 取出整个列表 -->
+    <ul>
+        <li>{{list.0}}</li> <!-- 取出列表第一个元素 -->
+        <li>{{list.1}}</li>
+        <li>{{list.2}}</li>
+    </ul>
+    <p>语言：{{dict.name}}</p>
+    <p>口号：{{dict.slogan}}</p>
+    <p>过滤器：{{greet | lower}}</p> <!-- greet的文本转换为小写 -->
+    <p>默认值：{{default_value | default:'views传递的变量的布尔值为false，则使用指定默认值'}}</p> <!-- 注意：default:值 不能有空格 -->
+    <p>字符{{greet}}的长度为{{greet | length}}</p>
+    <p>文件大小为：{{file_size | filesizeformat}}</p> <!-- filesizeformat以更容易阅读的方式显示文件大小，例如2.5KB -->
+    <p>日期格式化：{{a_date | date:'Y-m-d H:i:s'}}</p> <!-- date格式化日期，完整格式：Y-m-d H:i:s 年-月-日 小时:分钟:秒  -->
+    <p>限制字符串长度：{{str_limit | truncatechars:7}}</p> <!-- truncatechars字符串字符个数多于指定字符数量，则截取超出部分，截取的部分以...表示 -->
+    <p>将字符串标记安全：{{to_baidu | safe}}</p> <!-- safe将字符串标记为安全，不加safe，django会对views传到html文件的内容进行转义，使其语义失效 -->
+
+    <!-- if-elif-else -->
+    <p>
+        {% if score >= 90 and score <= 100 %}
+        优秀
+        {% elif num >= 80 and score < 90 %}
+        良好
+        {% elif num >= 60 and score < 80 %}
+        合格
+        {% else %}
+        快去学习
+        {% endif %}
+    </p>
+
+    <!-- for循环迭代 -->
+    <ul>
+        {% for item in list %}
+        <li>{{item}}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- 遍历字典 -->
+    <p>
+        {% for key, value in dict.items %}
+        {{key}} --- {{value}}
+        {% endfor %}
+    </p>
+
+    <!-- 通过forloop获取循环序号 -->
+    <p>
+        {% for i in abc_list %}
+            {{forloop.counter}} {# 顺序获取循环序号，从1开始 #}
+<!--            {{forloop.counter0}}  {# 顺序获取循环序号，从0开始 #}-->
+<!--            {{forloop.revcounter}} {# 倒序获取循环序号，结尾序号为1 #}-->
+<!--            {{forloop.revcounter0}} {# 倒序获取循环序号，结尾序号为0 #}-->
+<!--            {{forloop.first}} {# 第一条数据返回True，其他数据返回False #}-->
+<!--            {{forloop.last}} {# 最后一条数据返回True，其他数据返回False #}-->
+        {% endfor %}
+    </p>
+
+    <!-- 循环为空 -->
+    <p>
+        {% for i in empty_list %}
+        {{forloop.counter}}
+        {% empty %}
+        空的集合
+        {% endfor %}
+    </p>
+
+    <!-- 比较两个值 -->
+    <!-- ifequal 或 ifnotequal -->
+    <p>
+        {% ifequal 'apple' 'apple' %}
+        值相等
+        {% else %}
+        值不相等
+        {% endifequal %}
+    </p>
+
+    {# 这是一段注释 #}
+
+    <!-- csrf_token防止跨站请求伪造 -->
+    <form action="http://localhost:8080/../login" method="get">
+        {% csrf_token %}
+        <input type="text" name="username" id="">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- 使用自定义过滤器 -->
+    {{ 9 | my_filter:9 }}
+
+    <!-- 使用自定义标签 -->
+    {% my_tag 9 9 %}
+
+    <!-- 使用自定义语义化标签 -->
+    {% my_html "这是一段字体颜色为红色的文本" %}
+
+    <!-- include标签允许当前模板包含其他模板 -->
+    {% include "footer.html" %}
+
+    <!-- 加载静态文件 -->
+<!--    <script src="/static/js/index.js"></script>-->
+
+    {% load static %}
+    <script src="{% static 'js/index.js' %}"></script>
+
+</body>
+</html>
